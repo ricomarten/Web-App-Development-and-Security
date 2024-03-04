@@ -4,9 +4,25 @@ import './App.css';
 function App() {
   const [todos, setTodos] = useState([]);
   const [newItem, setNewItem] = useState("");
+  const [filter, setFilter] = useState('all'); 
   const [isEditing, setIsEditing] = useState(null);
   const [editText, setEditText] = useState("");
 
+  const handleFilterChange = (newFilter) => {
+    setFilter(newFilter);
+    console.log("Filter changed to:", newFilter);
+  };
+  const getFilteredTodos = () => {
+    console.log("Filtering todos:", filter);
+    switch (filter) {
+      case 'completed':
+        return todos.filter(todo => todo.isCompleted);
+      case 'uncompleted':
+        return todos.filter(todo => !todo.isCompleted);
+      default:
+        return todos;
+    }
+  };
   const handleAddTodo = (e) => {
     e.preventDefault();
     if (!newItem.trim()) return;
@@ -18,15 +34,13 @@ function App() {
     setTodos([...todos, newTodo]);
     setNewItem("");
   };
-
   const handleToggleCompletion = (id) => {
-    setTodos(
-      todos.map((todo) =>
-        todo.id === id ? { ...todo, isCompleted: !todo.isCompleted } : todo
-      )
-    );
-  };
-
+    const updatedTodos = todos.map((todo) =>
+    todo.id === id ? { ...todo, isCompleted: !todo.isCompleted } : todo
+  );
+  setTodos(updatedTodos);
+  console.log(updatedTodos); 
+};
   const handleDeleteTodo = (id) => {
     setTodos(todos.filter((todo) => todo.id !== id));
   };
@@ -53,6 +67,19 @@ function App() {
     setEditText("");
   };
 
+  // const handleAddBulkTodos = (e) => {
+  //   e.preventDefault();
+  //   const tasks = bulkItems.split('\n').filter(task => task.trim() !== '');
+  //   const newTodos = tasks.map(task => ({
+  //     id: Date.now() + Math.random(),
+  //     text: task,
+  //     isCompleted: false
+  //   }));
+  //   setTodos([...todos, ...newTodos]);
+  //   setBulkItems("");
+  
+  // };
+  
   return (
     // Testing:
 
@@ -95,16 +122,20 @@ function App() {
         />
         <button type="submit" className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" variant ="contained">Add</button>
       </form>
-
+      <div className="filters mb-4">
+        <button onClick={() => handleFilterChange('all')} className={`filter-btn ${filter === 'all' ? 'bg-blue-500' : 'bg-gray-300'} text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline`}>All</button>
+        <button onClick={() => handleFilterChange('completed')} className={`filter-btn ${filter === 'completed' ? 'bg-blue-500' : 'bg-gray-300'} text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline`}>Completed</button>
+        <button onClick={() => handleFilterChange('uncompleted')} className={`filter-btn ${filter === 'uncompleted' ? 'bg-blue-500' : 'bg-gray-300'} text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline`}>Uncompleted</button>
+      </div>
       <h1 className="header text-2xl font-bold underline">Todo List</h1>
       <ul>
-        {todos.map((todo) => (
+      {getFilteredTodos().map((todo) => (
           <li key={todo.id} className={`list-item ${todo.isCompleted ? 'line-through' : ''} bg-white flex items-center shadow-lg mb-2 p-4 rounded decoration-red-900`}>
             {isEditing === todo.id ? (
               <div className="edit-form flex">
                 <input
                   type="text"
-                  className="edit-text flex-1 p-2 border rounded"
+                  className="text-gray-700 flex-1 p-2 border rounded"
                   value={editText}
                   onChange={(e) => setEditText(e.target.value)}
                 />
@@ -120,7 +151,7 @@ function App() {
                     checked={todo.isCompleted}
                     onChange={() => handleToggleCompletion(todo.id)}
                 />
-                  <span className="todo-text">{todo.text}</span>
+                  <span className="text-gray-950">{todo.text}</span>
                 </label>
                <div>
                <button className="btn-alert bg-amber-500 hover:bg-yellow-700 text-white py-2 px-4 rounded-l" onClick={() => handleEditTodo(todo.id)}>Edit</button>
