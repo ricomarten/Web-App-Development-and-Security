@@ -112,7 +112,7 @@ function App() {
 
     <div className="app bg-gray-600 min-h-screen flex flex-col justify-center items-center">
       <form onSubmit={handleAddTodo} className="new-item-form bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
-        <label htmlFor="new-item-input" className="block text-gray-700 text-4xl font-extrabold ">New item</label>
+        <label htmlFor="new-item-input" className="block text-gray-700 text-4xl font-extrabold ">To Do App</label>
         <input
           id="new-item-input"
           className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
